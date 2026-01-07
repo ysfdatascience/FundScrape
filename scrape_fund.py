@@ -53,6 +53,16 @@ def scrape_fund(*args):
 
     # dataframe dönüşümü
     df_final = pd.DataFrame(data = final_list, index = fon_adı_final, columns = data_columns)
+    df_final = df_final.reset_index(names=["Fon Adı"])
+    date = dt.datetime.now().strftime("%d-%m-%Y")
+    df_final.insert(0, "Date", date)
 
+    #fon künye bilgileri
+    if detail == True:
+
+        fon_details_header = [item.text for item in soup.find(class_="fund-profile").find_all(class_="fund-profile-header")]
+        fon_details_item = [item.text for item in soup.find(class_="fund-profile").find_all(class_="fund-profile-item")]
+        fund_detail = pd.DataFrame(list(zip(fon_details_header, fon_details_item)), columns=["Header", "Detail"])
+        display(fund_detail)
 
     return df_final
